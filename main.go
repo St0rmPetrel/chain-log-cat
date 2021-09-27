@@ -10,17 +10,21 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/St0rmPetrel/chain-log-cat/utils"
 	"github.com/fsnotify/fsnotify"
 )
 
 func main() {
-	//trackChanges("test.txt")
-	var logs map[time.Time][]byte = make(map[time.Time][]byte)
-	logs[time.Now()] = []byte("hello")
+	//var logs map[time.Time][]byte = make(map[time.Time][]byte)
 	exists_files, err := FindFreshLogFiles("..", 30*time.Second)
 	if err != nil {
 		log.Fatal(err)
 	}
+	new_files, err := FindFreshLogFiles("..", 5*time.Second)
+	if err != nil {
+		log.Fatal(err)
+	}
+	new_files = utils.Except(new_files, exists_files)
 	for _, file := range exists_files {
 		fmt.Println("|" + file + "|")
 	}
