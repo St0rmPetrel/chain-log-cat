@@ -30,6 +30,24 @@ func main() {
 	}
 }
 
+func readNewFile(filename string) (time.Time, []byte) {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	stat, err := file.Stat()
+	if err != nil {
+		log.Fatal(err)
+	}
+	t := stat.ModTime()
+	buf, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return t, buf
+}
+
 func trackChanges(ctx context.Context, filename string) (time.Time, []byte) {
 	file, err := os.Open(filename)
 	if err != nil {
