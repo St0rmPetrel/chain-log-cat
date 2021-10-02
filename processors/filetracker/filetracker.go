@@ -15,7 +15,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/St0rmPetrel/chain-log-cat/processors"
 	"github.com/St0rmPetrel/chain-log-cat/utils"
 	"github.com/fsnotify/fsnotify"
 )
@@ -26,7 +25,7 @@ type tracker struct {
 	age    time.Duration
 }
 
-func New(root, patern string, age time.Duration) processors.Tracker {
+func New(root, patern string, age time.Duration) *tracker {
 	return &tracker{
 		root:   root,
 		patern: patern,
