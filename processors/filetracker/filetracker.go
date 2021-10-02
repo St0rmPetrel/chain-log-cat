@@ -67,9 +67,12 @@ func (t *tracker) trackChanges() map[time.Duration][]byte {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	startTime := time.Now()
+	var wg sync.WaitGroup
 	var mu sync.Mutex
 	for _, file := range exists_files {
+		wg.Add(1)
 		go func(file string) {
+			defer wg.Done()
 			b, t, err := trackFileChanges(ctx, file)
 			if err != nil {
 				return
@@ -81,6 +84,7 @@ func (t *tracker) trackChanges() map[time.Duration][]byte {
 	}
 	<-interruptSignal
 	cancel()
+	wg.Wait()
 
 	new_files := utils.Except(must(t.findActualFiles()), exists_files)
 	for _, file := range new_files {
